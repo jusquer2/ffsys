@@ -1,9 +1,12 @@
 package com.jusquer.ffsys.persistence.entity;
 
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@EnableAutoConfiguration
 @Table(name = "ventas")
 public class Ventas {
     @Id

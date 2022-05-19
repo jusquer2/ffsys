@@ -1,12 +1,16 @@
 package com.jusquer.ffsys.persistence.entity;
 
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
+@EnableAutoConfiguration
 @Table(name = "corte")
 public class Corte {
     @Id
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idcorte")
     private Integer idCorte;
