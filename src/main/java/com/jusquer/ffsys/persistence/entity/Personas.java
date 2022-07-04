@@ -11,24 +11,35 @@ import java.sql.Timestamp;
 public class Personas {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idpersona;
-    private String nombrepersona;
+    @Column(name = "idpersona")
+    private Integer idPersona;
+    @Column(name = "nombrepersona")
+    private String nombrePersona;
     private Timestamp fechapersona;
+    private Boolean eliminado;
 
-    public Integer getIdpersona() {
-        return idpersona;
+    public Boolean getEliminado() {
+        return eliminado;
     }
 
-    public void setIdpersona(Integer idpersona) {
-        this.idpersona = idpersona;
+    public void setEliminado(Boolean eliminado) {
+        this.eliminado = eliminado;
     }
 
-    public String getNombrepersona() {
-        return nombrepersona;
+    public Integer getIdPersona() {
+        return idPersona;
     }
 
-    public void setNombrepersona(String nombrepersona) {
-        this.nombrepersona = nombrepersona;
+    public void setIdPersona(Integer idPersona) {
+        this.idPersona = idPersona;
+    }
+
+    public String getNombrePersona() {
+        return nombrePersona;
+    }
+
+    public void setNombrePersona(String nombrePersona) {
+        this.nombrePersona = nombrePersona;
     }
 
     public Timestamp getFechapersona() {

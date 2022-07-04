@@ -19,7 +19,17 @@ public class PersonasRepository implements com.jusquer.ffsys.domain.repository.P
     }
 
     @Override
+    public List<Personas> findByEliminado(Boolean eliminado) {
+        return personasCrudRepository.findByEliminado(eliminado);
+    }
+
+    @Override
     public Personas save(Personas personas) {
         return personasCrudRepository.save(personas);
+    }
+
+    @Override
+    public Personas findById(Integer id) {
+        return personasCrudRepository.findById(id).get();
     }
 }

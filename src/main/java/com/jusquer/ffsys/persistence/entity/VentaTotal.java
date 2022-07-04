@@ -24,6 +24,24 @@ public class VentaTotal {
     private List<Ventas> lstVentas;
     @Column(name = "num_orden")
     private Integer numOrden;
+    private Boolean uber;
+    private Boolean tarjeta;
+
+    public Boolean getUber() {
+        return uber;
+    }
+
+    public void setUber(Boolean uber) {
+        this.uber = uber;
+    }
+
+    public Boolean getTarjeta() {
+        return tarjeta;
+    }
+
+    public void setTarjeta(Boolean tarjeta) {
+        this.tarjeta = tarjeta;
+    }
 
     public Integer getNumOrden() {
         return numOrden;

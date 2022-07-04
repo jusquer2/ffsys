@@ -11,32 +11,53 @@ import java.sql.Timestamp;
 public class Mermas {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idmerma;
-    @OneToOne
-    @JoinColumn(name = "idpersona")
-    private Personas personas;
+    @Column(name = "idmerma")
+    private Integer idMerma;
+    @Column(name = "idpersona")
+    private Integer idPersona;
+    @ManyToOne
+    @JoinColumn(name = "idpersona", insertable = false, updatable = false)
+    private Personas persona;
     private Integer cantidad;
-    @OneToOne
-    @JoinColumn(name = "idhotdog", insertable = false,updatable = false)
-    private Hotdogs hotdogs;
+    @Column(name = "idhotdog")
+    private Integer idHotdog;
+    @ManyToOne
+    @JoinColumn(name = "idhotdog", insertable = false, updatable = false)
+    private Hotdogs hotdog;
     @Column(name = "idcorte")
     private Integer idCorte;
     private Timestamp fechamerma;
 
-    public Integer getIdmerma() {
-        return idmerma;
+    public Hotdogs getHotdog() {
+        return hotdog;
     }
 
-    public Personas getPersonas() {
-        return personas;
+    public void setHotdog(Hotdogs hotdog) {
+        this.hotdog = hotdog;
     }
 
-    public void setPersonas(Personas personas) {
-        this.personas = personas;
+    public Personas getPersona() {
+        return persona;
     }
 
-    public void setIdmerma(Integer idmerma) {
-        this.idmerma = idmerma;
+    public void setPersona(Personas persona) {
+        this.persona = persona;
+    }
+
+    public Integer getIdMerma() {
+        return idMerma;
+    }
+
+    public void setIdMerma(Integer idMerma) {
+        this.idMerma = idMerma;
+    }
+
+    public Integer getIdPersona() {
+        return idPersona;
+    }
+
+    public void setIdPersona(Integer idPersona) {
+        this.idPersona = idPersona;
     }
 
     public Integer getCantidad() {
@@ -47,12 +68,12 @@ public class Mermas {
         this.cantidad = cantidad;
     }
 
-    public Hotdogs getHotdogs() {
-        return hotdogs;
+    public Integer getIdHotdog() {
+        return idHotdog;
     }
 
-    public void setHotdogs(Hotdogs hotdogs) {
-        this.hotdogs = hotdogs;
+    public void setIdHotdog(Integer idHotdog) {
+        this.idHotdog = idHotdog;
     }
 
     public Integer getIdCorte() {

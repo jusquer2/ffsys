@@ -17,7 +17,9 @@ import net.sf.jasperreports.engine.export.JRRtfExporter;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleWriterExporterOutput;
+
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
@@ -33,21 +35,24 @@ import java.awt.print.PrinterJob;
 import java.io.*;
 import java.util.*;
 
-
+@Component
 public class PrintInvoice {
-    @Value("${receipt.title}")
-    private String title;
-    @Value("${receipt.footer1}")
-    private String footer1;
-    @Value("${receipt.msgline1}")
-    private String msgline1;
-    @Value("${receipt.msgline2}")
-    private String msgline2;
-    @Value("${receipt.address1}")
-    private String address1;
-    @Value("${receipt.address2}")
-    private String address2;
 
+   @Value("${receipt.title}")
+    private String TITLE;
+
+    @Value("${receipt.footer1}")
+    private String FOOTER1;
+    @Value("${receipt.msgline1}")
+    private String MSGLINE1;
+    @Value("${receipt.msgline2}")
+    private String MSGLINE2;
+    @Value("${receipt.address1}")
+    private String ADDRESS1;
+    @Value("${receipt.address2}")
+    private String ADDRESS2;
+    @Value("${receipt.name}")
+    private String NAME;
 
     public Resultado getFormatoReporte(VentaTotal ventaTotal) {
         Resultado resultado = new Resultado();
@@ -70,37 +75,24 @@ public class PrintInvoice {
                 datosReporteJasper = (ReporteDatosJasper) resultadoDatosReporteJasper.getLstResultado().get(0);
 
                 // Llena el reporte con el hashMap
-                InputStream is = new FileInputStream(new File("C:/Invoice58mm.jrxml"));
+                InputStream is = new FileInputStream(new File("C:/Invoice.jrxml"));
                 JasperDesign jd = JRXmlLoader.load(is);
                 int dynamicHeight = 0;
                 if (ventaTotal.getLstVentas().size() > 4) {
-                    dynamicHeight = (15 * (ventaTotal.getLstVentas().size() - 4));
+                    dynamicHeight = (20 * (ventaTotal.getLstVentas().size() - 4));
+                    //dynamicHeight = (25 * (ventaTotal.getLstVentas().size() - 4));
                 }
-                jd.setPageHeight(500 + dynamicHeight);
+                //jd.setPageHeight(325 + dynamicHeight);
+                jd.setPageHeight(405 + dynamicHeight);
                 JasperReport jr = JasperCompileManager.compileReport(jd);
                 JasperPrint print = JasperFillManager.fillReport(jr, datosReporteJasper.getParametros(),
                         datosReporteJasper.getFieldsReporte());
-
-                // Crea el documento
-                JRRtfExporter exporter = new JRRtfExporter();
-                final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-                OutputStream outputStream = new FileOutputStream("C:\\Users\\Dell\\Downloads/application.txt");
-                // configuracin de la exportacion
-                exporter.setExporterInput(new SimpleExporterInput(print));
-                exporter.setExporterOutput(new SimpleWriterExporterOutput(outStream));
-
-                outputStream.write(outStream.toByteArray());
-                outputStream.close();
-                // Exporta el archivo
-                exporter.exportReport();
-
-                // Genera una cadena codificada en base 64 de los bytes del reporte
-                String reporteB64 = Base64.getEncoder().encodeToString(outStream.toByteArray());
-                lstResultado.add(reporteB64);
                 try {
-                    PrintFromJasper(print, PrintServiceLookup.lookupDefaultPrintService().getName());
+                    PrintService service = PrintServiceLookup.lookupDefaultPrintService();
+                    //PrintFromJasper(print, "EPSON TM-T20II Receipt");
+                    PrintFromJasper(print, service.getName());
                 } catch (Exception e) {
-                    System.err.println("No hay impresoras " + e.getMessage());
+                    System.err.println("No hay impresora DEFAULT" + e.getMessage());
                 }
 
                 resultado.setLstResultado(lstResultado);
@@ -117,8 +109,6 @@ public class PrintInvoice {
     }
 
     /**
-     * Genera el reporte de los detalles de tariamas individuales mediante el
-     * idTarima y la zona
      *
      * @author Juan Manuel Esquer Esquer
      * @return resultado
@@ -133,8 +123,12 @@ public class PrintInvoice {
         Collection<Map<String, ?>> simpleMasterList = new ArrayList<>();
 
         simpleMasterMap = new HashMap<String, Object>();
-        simpleMasterMap.put("titulo", title);
-        simpleMasterMap.put("footer1", footer1);
+        //simpleMasterMap.put("titulo", "Hot Dog's Carlos Alamos, Son.");
+        //simpleMasterMap.put("titulo", "Taqueria La Morelos");
+        simpleMasterMap.put("titulo", TITLE==null?"Dogos de la morelos":TITLE);
+        //simpleMasterMap.put("footer1", "Tel. 01 (647) 428 1518");
+        //simpleMasterMap.put("footer1", "Tel. 642 151 0093");
+        simpleMasterMap.put("footer1", FOOTER1==null?"Tel. 642 149 2023":FOOTER1);
         simpleMasterMap.put("numOrden", ventaTotal.getNumOrden() + "");
         simpleMasterMap.put("total", ventaTotal.getTotal().toString());
         simpleMasterMap.put("pago", ventaTotal.getPago().toString());
@@ -155,6 +149,7 @@ public class PrintInvoice {
             datosReporteJasper.setFieldsReporte(fieldsReporte);
 
             lstResultado.add(datosReporteJasper);
+            resultado.setError(false);
             resultado.setLstResultado(lstResultado);
 
         } catch (Exception e) {
@@ -180,8 +175,6 @@ public class PrintInvoice {
             AttributeSet attributeSet = new HashPrintServiceAttributeSet(new PrinterName(printerNameShort, null));
 
             PrintService[] printService = PrintServiceLookup.lookupPrintServices(null, attributeSet);
-            byte[] cutP = new byte[] { 0x1d, 'V', 1 };
-            byte[] open = { 27, 112, 48, 55, 121 };
             PrinterService printerService = new PrinterService();
 
             try {
@@ -207,8 +200,6 @@ public class PrintInvoice {
             exporter.setParameter(JRPrintServiceExporterParameter.DISPLAY_PAGE_DIALOG, Boolean.FALSE);
             exporter.setParameter(JRPrintServiceExporterParameter.DISPLAY_PRINT_DIALOG, Boolean.FALSE);
             exporter.exportReport();
-            printerService.printBytes(printerNameShort, cutP);
-            printerService.printBytes(printerNameShort, open);
             printerService.printBytes(printerNameShort, PrinterService.PAPER_FULL_CUT);
             printerService.printBytes(printerNameShort, PrinterService.CD_KICK_2);
             printerService.printBytes(printerNameShort, PrinterService.CD_KICK_5);
@@ -221,13 +212,21 @@ public class PrintInvoice {
     public Resultado cortePrint(Total total) {
         Resultado resultado = new Resultado();
         PrinterService printerService = new PrinterService();
-        String printername = PrintServiceLookup.lookupDefaultPrintService().getName();
 
+        String printername = NAME;//"EPSON TM-T20II Receipt";
+        try{
+            PrintService service = PrintServiceLookup.lookupDefaultPrintService();
+            printername = service.getName();
+        }catch(Exception e){
+            printername = NAME;
+        }
         try {
             printerService.printBytes(printername, PrinterService.HW_INIT);
             printerService.printBytes(printername, PrinterService.BREAK_LINE);
             printerService.printBytes(printername, PrinterService.TXT_ALIGN_CT);
-            printerService.printString(printername, title);
+            //printerService.printString(printername, "Hot Dog's Carlos, Alamos,Son.");
+            //printerService.printString(printername, "Taqueria La Morelos");
+            printerService.printString(printername, TITLE==null?"DOGOS DE LA MORELOS, Navojoa Son.":TITLE);
             printerService.printBytes(printername, PrinterService.BREAK_LINE);
             printerService.printString(printername, new Date().toString());
             printerService.printBytes(printername, PrinterService.BREAK_LINE);
@@ -237,26 +236,26 @@ public class PrintInvoice {
             printerService.printString(printername, "MERMAS");
             printerService.printBytes(printername, PrinterService.BREAK_LINE);
 
-            /*for (Map<String,Serializable> merma:total.getMerma()) {
-                printerService.printString(printername, merma.getPersonas().getNombrepersona() + " ("+merma.getCantidad()+")");
+            for (Mermas merma:total.getMerma()) {
+                printerService.printString(printername, merma.getPersona().getNombrePersona() + " ("+merma.getCantidad()+")");
                 printerService.printBytes(printername, PrinterService.BREAK_LINE);
-            }*/
+            }
             printerService.printString(printername, "================================");
             printerService.printBytes(printername, PrinterService.BREAK_LINE);
             printerService.printString(printername, "PRODUCTOS VENDIDOS");
             printerService.printBytes(printername, PrinterService.BREAK_LINE);
-            for (Map<String,Serializable> productos_Totales:total.getProductosTotales()) {
-                printerService.printString(printername, productos_Totales.get("descripcion") + " ("+productos_Totales.get("cantidad")+")");
+            for (ProductosTotales productos_Totales:total.getProductosTotales()) {
+                printerService.printString(printername, productos_Totales.getProducto() + " ("+productos_Totales.getCantidad()+")");
                 printerService.printBytes(printername, PrinterService.BREAK_LINE);
             }
             printerService.printString(printername, "================================");
             printerService.printBytes(printername, PrinterService.BREAK_LINE);
             printerService.printString(printername, "PRESTAMOS DE CAJA");
             printerService.printBytes(printername, PrinterService.BREAK_LINE);
-            /*for (Map<String,Serializable> prestamoCaja:total.getPrestamoCaja()) {
-                printerService.printString(printername, prestamoCaja.getPersonas().getNombrepersona() + " ($"+prestamoCaja.getCantidaddinero()+")");
+            for (Prestamocaja  prestamoCaja:total.getPrestamoCaja()) {
+                printerService.printString(printername, prestamoCaja.getPersona().getNombrePersona() + " ($"+prestamoCaja.getCantidadDinero()+")");
                 printerService.printBytes(printername, PrinterService.BREAK_LINE);
-            }*/
+            }
             printerService.printString(printername, "================================");
             printerService.printBytes(printername, PrinterService.BREAK_LINE);
             printerService.printString(printername, "DINERO CAJA INICIO VENTA    " + total.getDineroCaja());
@@ -267,29 +266,23 @@ public class PrintInvoice {
             printerService.printBytes(printername, PrinterService.BREAK_LINE);
             printerService.printString(printername, "TOTAL VENDIDO    " + total.getTotalVendido());
             printerService.printBytes(printername, PrinterService.BREAK_LINE);
+            printerService.printString(printername, "TOTAL UBER    " + total.getUberTotal());
+            printerService.printBytes(printername, PrinterService.BREAK_LINE);
+            printerService.printString(printername, "TOTAL TARJETA    " + total.getTarjetaTotal());
+            printerService.printBytes(printername, PrinterService.BREAK_LINE);
             printerService.printString(printername, "================================");
             printerService.printString(printername, "TOTAL     " + ( Float.parseFloat(total.getDineroCaja())+Float.parseFloat( total.getTotalVendido())));
             printerService.printBytes(printername, PrinterService.BREAK_LINE);
             printerService.printString(printername, "================================");
             printerService.printBytes(printername, PrinterService.TXT_BOLD_ON); // bold on
             printerService.printBytes(printername, PrinterService.TXT_ALIGN_CT);
-            printerService.printString(printername, "CORTE");
-            printerService.printBytes(printername, PrinterService.BREAK_LINE);
-            printerService.printString(printername, msgline1);
-            printerService.printBytes(printername, PrinterService.BREAK_LINE);
-            printerService.printString(printername, msgline2);
-            printerService.printBytes(printername, PrinterService.BREAK_LINE);
-            printerService.printString(printername, address1);
-            printerService.printBytes(printername, PrinterService.BREAK_LINE);
-            printerService.printString(printername, address2);
             printerService.printBytes(printername, PrinterService.BREAK_LINE);
             printerService.printBytes(printername, PrinterService.BREAK_LINE);
             printerService.printBytes(printername, PrinterService.BREAK_LINE);
             printerService.printBytes(printername, PrinterService.BREAK_LINE);
+            //printerService.printBytes(printername, PrinterService.PAPER_FULL_CUT);
             printerService.printBytes(printername, PrinterService.CD_KICK_2);
             printerService.printBytes(printername, PrinterService.CD_KICK_5);
-            printerService.printString(printername, "'");
-            printerService.printBytes(printername, PrinterService.TXT_BOLD_OFF);
             resultado.setError(false);
         } catch (Exception e) {
             resultado.setError(true);
@@ -297,6 +290,5 @@ public class PrintInvoice {
         }
         return resultado;
     }
-
 
 }

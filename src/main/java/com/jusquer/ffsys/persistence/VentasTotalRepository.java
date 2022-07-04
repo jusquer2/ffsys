@@ -73,4 +73,14 @@ public class VentasTotalRepository implements com.jusquer.ffsys.domain.repositor
     public List<VentaTotal> findByIdCorte(Integer idcorte) {
         return ventasTotalCrudRepository.findByIdCorte(idcorte);
     }
+
+    @Override
+    public List<Map<String, Serializable>> getTotalUber(Integer idcorte) {
+        return ventasTotalCrudRepository.getTotalUber(idcorte);
+    }
+
+    @Override
+    public List<Map<String, Serializable>> getTotalTarjeta(Integer idcorte) {
+        return ventasTotalCrudRepository.getTotalTarjeta(idcorte);
+    }
 }

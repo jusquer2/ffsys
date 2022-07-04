@@ -11,32 +11,46 @@ import java.sql.Timestamp;
 public class Prestamocaja {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idprestamocaja;
+    @Column(name = "idprestamocaja")
+    private Integer idPrestamoCaja;
+    @Column(name = "idpersona")
+    private Integer idPersona;
     @ManyToOne
-    @JoinColumn(name = "idpersona")
-    private Personas personas;
+    @JoinColumn(name = "idpersona", insertable = false, updatable = false)
+    private Personas persona;
     private String concepto;
-    private Double cantidaddinero;
+    @Column(name = "cantidaddinero")
+    private Double cantidadDinero;
     @ManyToOne
     @JoinColumn(name = "idcorte", insertable = false, updatable = false)
     private Corte corte;
+    @Column(name = "fechaPrestamo")
     private Timestamp fechaprestamo;
     @Column(name = "idcorte")
     private Integer idCorte;
-    public Integer getIdprestamocaja() {
-        return idprestamocaja;
+
+    public Integer getIdPrestamoCaja() {
+        return idPrestamoCaja;
     }
 
-    public void setIdprestamocaja(Integer idprestamocaja) {
-        this.idprestamocaja = idprestamocaja;
+    public void setIdPrestamoCaja(Integer idPrestamoCaja) {
+        this.idPrestamoCaja = idPrestamoCaja;
     }
 
-    public Personas getPersonas() {
-        return personas;
+    public Integer getIdPersona() {
+        return idPersona;
     }
 
-    public void setPersonas(Personas personas) {
-        this.personas = personas;
+    public void setIdPersona(Integer idPersona) {
+        this.idPersona = idPersona;
+    }
+
+    public Personas getPersona() {
+        return persona;
+    }
+
+    public void setPersona(Personas persona) {
+        this.persona = persona;
     }
 
     public String getConcepto() {
@@ -47,12 +61,12 @@ public class Prestamocaja {
         this.concepto = concepto;
     }
 
-    public Double getCantidaddinero() {
-        return cantidaddinero;
+    public Double getCantidadDinero() {
+        return cantidadDinero;
     }
 
-    public void setCantidaddinero(Double cantidaddinero) {
-        this.cantidaddinero = cantidaddinero;
+    public void setCantidadDinero(Double cantidadDinero) {
+        this.cantidadDinero = cantidadDinero;
     }
 
     public Corte getCorte() {

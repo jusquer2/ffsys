@@ -6,5 +6,7 @@ import java.util.List;
 
 public interface PersonasRepository {
     List<Personas> getAll();
+    List<Personas> findByEliminado(Boolean eliminado);
     Personas save(Personas personas);
+    Personas findById(Integer id);
 }

@@ -17,6 +17,15 @@ public class Productos {
     private Boolean ispapas;
     private Boolean eliminado;
     private Integer prioridad;
+    private Integer idcategoria;
+
+    public Integer getIdcategoria() {
+        return idcategoria;
+    }
+
+    public void setIdcategoria(Integer idcategoria) {
+        this.idcategoria = idcategoria;
+    }
 
     public Integer getPrioridad() {
         return prioridad;

@@ -2,6 +2,7 @@ package com.jusquer.ffsys.domain.repository;
 
 import com.jusquer.ffsys.domain.dto.ProductosTotales;
 import com.jusquer.ffsys.persistence.entity.VentaTotal;
+import org.springframework.data.jpa.repository.Query;
 
 import java.io.Serializable;
 import java.util.List;
@@ -20,5 +21,7 @@ public interface VentasTotalRepository {
     List<Map<String, Serializable>> getProductosPorMes();
     List<Map<String, Serializable>> getPanesRestantes(Integer idcorte);
     List<VentaTotal> findByIdCorte(Integer idcorte);
+    List<Map<String, Serializable>> getTotalUber(Integer idcorte);
+    List<Map<String, Serializable>> getTotalTarjeta(Integer idcorte);
 
 }

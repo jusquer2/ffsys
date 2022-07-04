@@ -1,5 +1,7 @@
 package com.jusquer.ffsys.Utils;
 
+import org.springframework.stereotype.Component;
+
 import javax.print.Doc;
 import javax.print.DocFlavor;
 import javax.print.DocPrintJob;

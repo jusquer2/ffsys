@@ -13,8 +13,13 @@ public class PersonasService {
     PersonasRepository personasRepository;
     public List<Personas> getAll(){
         return personasRepository.getAll();
+    }public List<Personas> findByEliminado(Boolean eliminado){
+        return personasRepository.findByEliminado(eliminado);
     }
     public Personas save(Personas personas){
         return personasRepository.save(personas);
+    }
+    public Personas findById(Integer id){
+        return personasRepository.findById(id);
     }
 }

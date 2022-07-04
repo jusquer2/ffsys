@@ -2,6 +2,8 @@ package com.jusquer.ffsys.domain.dto;
 
 
 import com.jusquer.ffsys.persistence.crud.VentasTotalCrudRepository;
+import com.jusquer.ffsys.persistence.entity.Mermas;
+import com.jusquer.ffsys.persistence.entity.Prestamocaja;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
@@ -11,31 +13,47 @@ import java.util.Map;
 public class Total {
     @Autowired
     VentasTotalCrudRepository ventaTotalService;
-    private List<Map<String, Serializable>> productosTotales;
-    private List<Map<String, Serializable>> merma;
-    private List<Map<String, Serializable>> prestamoCaja;
+    private List<ProductosTotales> productosTotales;
+    private List<Mermas> merma;
+    private List<Prestamocaja> prestamoCaja;
     private String totalVendido;
     private String totalPapas;
     private Double total;
     private String dineroCaja;
     private String dineroCajaCorte;
-    public Total(){
+    private Double uberTotal;
+    private Double tarjetaTotal;
 
-    }
-    public String getDineroCaja() {
-        return dineroCaja;
-    }
-
-    public void setDineroCaja(String dineroCaja) {
-        this.dineroCaja = dineroCaja;
+    public VentasTotalCrudRepository getVentaTotalService() {
+        return ventaTotalService;
     }
 
-    public String getDineroCajaCorte() {
-        return dineroCajaCorte;
+    public void setVentaTotalService(VentasTotalCrudRepository ventaTotalService) {
+        this.ventaTotalService = ventaTotalService;
     }
 
-    public void setDineroCajaCorte(String dineroCajaCorte) {
-        this.dineroCajaCorte = dineroCajaCorte;
+    public List<ProductosTotales> getProductosTotales() {
+        return productosTotales;
+    }
+
+    public void setProductosTotales(List<ProductosTotales> productosTotales) {
+        this.productosTotales = productosTotales;
+    }
+
+    public List<Mermas> getMerma() {
+        return merma;
+    }
+
+    public void setMerma(List<Mermas> merma) {
+        this.merma = merma;
+    }
+
+    public List<Prestamocaja> getPrestamoCaja() {
+        return prestamoCaja;
+    }
+
+    public void setPrestamoCaja(List<Prestamocaja> prestamoCaja) {
+        this.prestamoCaja = prestamoCaja;
     }
 
     public String getTotalVendido() {
@@ -62,31 +80,35 @@ public class Total {
         this.total = total;
     }
 
-
-    public void setProductosTotales(List<Map<String, Serializable>> productosTotales) {
-        this.productosTotales = productosTotales;
+    public String getDineroCaja() {
+        return dineroCaja;
     }
 
-
-    public void setMerma(List<Map<String, Serializable>> merma) {
-        this.merma = merma;
+    public void setDineroCaja(String dineroCaja) {
+        this.dineroCaja = dineroCaja;
     }
 
-
-    public void setPrestamoCaja(List<Map<String, Serializable>> prestamoCaja) {
-        this.prestamoCaja = prestamoCaja;
+    public String getDineroCajaCorte() {
+        return dineroCajaCorte;
     }
 
-
-    public List<Map<String, Serializable>> getProductosTotales() {
-        return productosTotales;
+    public void setDineroCajaCorte(String dineroCajaCorte) {
+        this.dineroCajaCorte = dineroCajaCorte;
     }
 
-    public List<Map<String, Serializable>> getMerma() {
-        return merma;
+    public Double getUberTotal() {
+        return uberTotal;
     }
 
-    public List<Map<String, Serializable>> getPrestamoCaja() {
-        return prestamoCaja;
+    public void setUberTotal(Double uberTotal) {
+        this.uberTotal = uberTotal;
+    }
+
+    public Double getTarjetaTotal() {
+        return tarjetaTotal;
+    }
+
+    public void setTarjetaTotal(Double tarjetaTotal) {
+        this.tarjetaTotal = tarjetaTotal;
     }
 }

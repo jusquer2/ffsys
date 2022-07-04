@@ -14,9 +14,11 @@ import java.util.Map;
 public class VentaTotalService {
     @Autowired
     VentasTotalRepository ventasTotalRepository;
+    @Autowired
+    PrintInvoice pi;
     public VentaTotal insertVenta(VentaTotal ventaTotal){
         try {
-            new PrintInvoice().getFormatoReporte(ventaTotal);
+            pi.getFormatoReporte(ventaTotal);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -56,5 +58,11 @@ public class VentaTotalService {
     }
     public List<VentaTotal> findByIdCorte(Integer idcorte){
         return ventasTotalRepository.findByIdCorte(idcorte);
+    }
+    public List<Map<String, Serializable>> getTotalUber(Integer idcorte){
+        return ventasTotalRepository.getTotalUber(idcorte);
+    }
+    public List<Map<String, Serializable>> getTotalTarjeta(Integer idcorte){
+        return ventasTotalRepository.getTotalTarjeta(idcorte);
     }
 }
