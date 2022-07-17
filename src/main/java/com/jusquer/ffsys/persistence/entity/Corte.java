@@ -24,6 +24,15 @@ public class Corte {
     @Column(name = "horasalida")
     private Timestamp horaSalida;
     private Integer panes;
+    private String nombreCajero;
+
+    public String getNombreCajero() {
+        return nombreCajero;
+    }
+
+    public void setNombreCajero(String nombreCajero) {
+        this.nombreCajero = nombreCajero;
+    }
 
     public Integer getPanes() {
         return panes;

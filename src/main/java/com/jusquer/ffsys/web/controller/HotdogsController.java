@@ -245,7 +245,12 @@ public class HotdogsController {
         total.setTotalVendido(totalVendido.get("totalvendido").toString());
 
         Map<String,Serializable> totalPapas = ventaTotalService.findTotalVendidoPapasByIdCorte(idcorte);
-        total.setTotalPapas ( totalPapas.get("total_papas").toString());
+        try {
+            total.setTotalPapas ( totalPapas.get("total_papas").toString());
+        }catch (Exception e){
+            total.setTotalPapas("0");
+        }
+
         Map<String,Serializable> totalPapasProductos = ventaTotalService.findTotalVendidoPapasProductosByIdCorte(idcorte);
         total.setTotalPapas( (totalPapasProductos.size()==0?0:(Double.parseDouble(totalPapasProductos.get("total").toString())) + Double.parseDouble(total.getTotalPapas()))+"");
         total.setTotal ( Double.parseDouble(total.getTotalVendido())+Double.parseDouble(total.getDineroCaja()));
@@ -268,7 +273,7 @@ public class HotdogsController {
                 total.setTarjetaTotal((Double) uber.get("total"));
             }
         }
-
+        total.setTotal(Double.parseDouble(total.getTotalVendido())-total.getTarjetaTotal()-total.getUberTotal()+Double.parseDouble( total.getDineroCaja()));
         Resultado resultado = new Resultado();
         List<Total> lstTotal = new ArrayList<>();
         lstTotal.add(total);

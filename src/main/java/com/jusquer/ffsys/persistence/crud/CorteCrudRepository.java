@@ -17,7 +17,7 @@ public interface CorteCrudRepository extends CrudRepository<Corte,Integer> {
     @Query(value = " SELECT panes as restantes, 0 as mermas, 0 as panesVendidos, panes from corte where idcorte=:idcorte", nativeQuery = true)
     List<Map<String, Serializable>> getPanesByIdCorteEmpty(Integer idcorte);
 
-    @Query(value = "SELECT idcorte, dinerocaja, dinerocajacorte, comentario, horaentrada, horasalida FROM public.corte where horaentrada = :fecha;", nativeQuery = true)
+    @Query(value = "SELECT idcorte, dinerocaja, dinerocajacorte, comentario, horaentrada, horasalida, nombreCajero FROM public.corte where horaentrada = :fecha;", nativeQuery = true)
     List<Map<String, Serializable>> getCortesFecha(Timestamp fecha);
 
     @Query(value = "select case when hd.hotdog is null then pd.producto else hd.hotdog end as descripcion , SUM(v.cantidad) as cantidad, case when (hd.precio*SUM(v.cantidad)) is null then (pd.precio*SUM(v.cantidad)) else (hd.precio*SUM(v.cantidad)) END as total, case when hd.hotdog is null then pd.precio else hd.precio end as preciounitario from public.ventas v inner join public.venta_total vt on  vt.idventa_total=v.idventa_total left join public.hotdogs hd on hd.idhotdog=v.idhotdog left join public.productos pd on pd.idproducto=v.idproducto where vt.idcorte=? group by v.idhotdog,v.idproducto,hd.hotdog,pd.producto,hd.precio,pd.producto,pd.precio", nativeQuery = true)

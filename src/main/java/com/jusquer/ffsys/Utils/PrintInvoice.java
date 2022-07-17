@@ -33,6 +33,7 @@ import javax.print.attribute.standard.PrinterName;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 import java.io.*;
+import java.text.DecimalFormat;
 import java.util.*;
 
 @Component
@@ -78,8 +79,8 @@ public class PrintInvoice {
                 InputStream is = new FileInputStream(new File("C:/Invoice.jrxml"));
                 JasperDesign jd = JRXmlLoader.load(is);
                 int dynamicHeight = 0;
-                if (ventaTotal.getLstVentas().size() > 4) {
-                    dynamicHeight = (20 * (ventaTotal.getLstVentas().size() - 4));
+                if (((ventaTotal.getTarjeta())?ventaTotal.getLstVentas().size()+1:ventaTotal.getLstVentas().size()) > 4) {
+                    dynamicHeight = (20 * (((ventaTotal.getTarjeta())?ventaTotal.getLstVentas().size()+1:ventaTotal.getLstVentas().size())- 4));
                     //dynamicHeight = (25 * (ventaTotal.getLstVentas().size() - 4));
                 }
                 //jd.setPageHeight(325 + dynamicHeight);
@@ -130,9 +131,15 @@ public class PrintInvoice {
         //simpleMasterMap.put("footer1", "Tel. 642 151 0093");
         simpleMasterMap.put("footer1", FOOTER1==null?"Tel. 642 149 2023":FOOTER1);
         simpleMasterMap.put("numOrden", ventaTotal.getNumOrden() + "");
-        simpleMasterMap.put("total", ventaTotal.getTotal().toString());
-        simpleMasterMap.put("pago", ventaTotal.getPago().toString());
+
         simpleMasterMap.put("cambio", ventaTotal.getCambio().toString());
+        if(ventaTotal.getTarjeta()){
+            simpleMasterMap.put("total", (new DecimalFormat("0.00").format(ventaTotal.getTotal()+ventaTotal.getTotal()*0.0506))+"");
+            simpleMasterMap.put("pago", (new DecimalFormat("0.00").format(ventaTotal.getPago()+ventaTotal.getPago()*0.0506))+" ");
+        }else{
+            simpleMasterMap.put("total", ventaTotal.getTotal().toString());
+            simpleMasterMap.put("pago", ventaTotal.getPago().toString());
+        }
         datosReporteJasper.setParametros(simpleMasterMap);
 
         for (Ventas venta : ventaTotal.getLstVentas()) {
@@ -143,6 +150,16 @@ public class PrintInvoice {
             simpleMasterMap.put("precio", venta.getPrecio().toString());
             simpleMasterList.add(simpleMasterMap);
         }
+        if(ventaTotal.getTarjeta()){
+
+            simpleMasterMap = new HashMap<String, Object>();
+            simpleMasterMap.put("descripcion", "comisión 5%");
+            simpleMasterMap.put("cantidad",  "1");
+            simpleMasterMap.put("pu", "");
+            simpleMasterMap.put("precio", new DecimalFormat("0.00").format(ventaTotal.getTotal()*0.0506));
+            simpleMasterList.add(simpleMasterMap);
+        }
+
 
         try {
             fieldsReporte = new JRMapCollectionDataSource(simpleMasterList);
@@ -271,7 +288,7 @@ public class PrintInvoice {
             printerService.printString(printername, "TOTAL TARJETA    " + total.getTarjetaTotal());
             printerService.printBytes(printername, PrinterService.BREAK_LINE);
             printerService.printString(printername, "================================");
-            printerService.printString(printername, "TOTAL     " + ( Float.parseFloat(total.getDineroCaja())+Float.parseFloat( total.getTotalVendido())));
+            printerService.printString(printername, "TOTAL     " + total.getTotal());
             printerService.printBytes(printername, PrinterService.BREAK_LINE);
             printerService.printString(printername, "================================");
             printerService.printBytes(printername, PrinterService.TXT_BOLD_ON); // bold on
